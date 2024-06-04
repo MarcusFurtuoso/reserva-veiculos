@@ -37,19 +37,19 @@ import { InputComponent } from '../input/input.component';
         <div class="flex gap-2">
           <button
             type="submit"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
           >
             Save Changes
-            <!-- <fa-icon icon="floppy-disk" class="pl-2 text-black" /> -->
+            <!-- <fa-icon icon="floppy-disk" class="pl-2 text-white" /> -->
             <fa-icon class="pl-2" [icon]="['far', 'floppy-disk']"></fa-icon>
           </button>
           <button
             (click)="addProfileToList()"
             type="button"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
           >
             Add Profile
-            <fa-icon icon="plus" class="pl-2 text-black" />
+            <fa-icon icon="plus" class="pl-2 text-white" />
 
           </button>
         </div>
@@ -90,18 +90,18 @@ import { InputComponent } from '../input/input.component';
             <button
               (click)="editProfile(profile, i)"
               type="button"
-              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
               Edit
-              <fa-icon icon="edit" class=" pl-2 text-black" />
+              <fa-icon icon="edit" class=" pl-2 text-white" />
             </button>
             <button
               (click)="selectProfileForDeletion(profile.id)"
               type="button"
-              class="bg-red-600 rounded-md px-6 py-1.5 text-black font-medium hover:bg-red-500 transition duration-300 ease-in-out"
+              class="bg-red-600 rounded-md px-6 py-1.5 text-white font-medium hover:bg-red-500 transition duration-300 ease-in-out"
             >
               Delete
-              <fa-icon icon="trash" class="pl-2 text-black" />
+              <fa-icon icon="trash" class="pl-2 text-white" />
             </button>
           </div>
         </div>

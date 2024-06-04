@@ -27,10 +27,10 @@ import { LoadingService } from '../../service/loading.service';
           <button
             type="submit"
             (click)="navigateToAddVehicle()"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
           >
             Add Vehicle
-            <fa-icon icon="plus" class="pl-2 text-black" />
+            <fa-icon icon="plus" class="pl-2 text-white" />
           </button>
 
           <div class="flex ml-2 items-center relative" (click)="toggleDropdown()">
@@ -42,7 +42,7 @@ import { LoadingService } from '../../service/loading.service';
               </svg>
             </button>
             <div
-              class="flex w-[6.5rem] flex-col absolute top-10 -left-8 bg-white border border-[#ED5A2F] rounded-md  px-2 py-2"
+              class="flex w-[6.5rem] flex-col absolute top-10 -left-8 bg-slatext-white border border-[#ED5A2F] rounded-md  px-2 py-2"
               [ngStyle]="{ display: dropdownOpen ? 'block' : 'none' }"
             >
             <div (click)="listAllVehicles()" class="hover:bg-[#ff754b] pb-1 px-1 w-full cursor-pointer rounded-md">
@@ -100,19 +100,19 @@ import { LoadingService } from '../../service/loading.service';
           <button
             (click)="navigateToUpdateVehicle(vehicle)"
             type="button"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
           >
             Edit
-            <fa-icon icon="edit" class=" pl-2 text-black" />
+            <fa-icon icon="edit" class=" pl-2 text-white" />
           </button>
 
           <button
             (click)="show(vehicle.id!)"
             type="button"
-            class="bg-red-600 rounded-md px-6 py-1.5 text-black font-medium hover:bg-red-500 transition duration-300 ease-in-out"
+            class="bg-red-600 rounded-md px-6 py-1.5 text-white font-medium hover:bg-red-500 transition duration-300 ease-in-out"
           >
             Delete
-            <fa-icon icon="trash" class="pl-2 text-black" />
+            <fa-icon icon="trash" class="pl-2 text-white" />
           </button>
         </div>
         <dialog

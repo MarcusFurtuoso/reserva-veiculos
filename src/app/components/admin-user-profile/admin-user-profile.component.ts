@@ -88,12 +88,12 @@ import { UsuarioService } from '../../service/usuario.service';
               type="button"
               (click)="show()"
               [disabled]="form.invalid"
-              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-sm text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-sm text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
               Add User to Profile
               <fa-icon
                 icon="arrow-right-from-bracket"
-                class=" pl-2 text-black"
+                class=" pl-2 text-white"
               />
             </button>
           </div>

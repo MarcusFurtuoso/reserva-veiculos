@@ -205,6 +205,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   public navigateToReserves() {
-    this.#router.navigate(['user/reserves']);
+    this.#router.navigate(['reserves']);
   }
 }
