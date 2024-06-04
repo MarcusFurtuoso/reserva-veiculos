@@ -1,0 +1,45 @@
+<div class="h-screen flex flex-col items-center bg-gray-50">
+  <h1 class="text-3xl font-semibold mt-8">User</h1>
+  <div class="w-2/3 mt-6 p-6 rounded-md shadow-2xl bg-white">
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+      <div class="grid grid-cols-1 gap-x-5 gap-y-6">
+        <div class="">
+          <app-input
+            label="Name"
+            name="nome"
+            type="text"
+            [disabled]="true"
+            placeholder="Enter user's name"
+            [ngModel]="usuario?.nome"
+          >
+          </app-input>
+        </div>
+
+        <div class="">
+          <app-input
+            label="Login"
+            name="login"
+            [disabled]="true"
+            type="email"
+            [ngModel]="usuario?.login"
+          >
+          </app-input>
+        </div>
+
+        @if(isAdmin) {
+          <div>
+            <app-input
+            label="Roles"
+            name="role"
+            type="text"
+            [disabled]="true"
+            [ngModel]="usuario?.authorities"
+          >
+          </app-input>
+          </div>
+        }
+
+      </div>
+    </form>
+  </div>
+</div>

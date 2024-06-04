@@ -1,0 +1,61 @@
+<div class="h-screen flex">
+  <nav class="bg-white h-screen w-[16rem] sticky top-0 z-0 pt-10">
+    @if (!isAdmin) {
+      <ul class="flex p-4 flex-col divide-y divide-[#ED5A2F]">
+        <li class="px-2 py-5">
+          <fa-icon icon="dharmachakra" class="pr-2 text-zinc-900"/>
+          <a class="text-zinc-950">Vehicles</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="car-side" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a class="" routerLink="/home/vehicles/cars">Cars</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="motorcycle" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a routerLink="/home/vehicles/motorcycles">Motorcycles</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="truck" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a routerLink="/home/vehicles/trucks">Trucks</a>
+        </li>
+      </ul>
+      <ul class="flex p-4 flex-col divide-y divide-[#ED5A2F]">
+        <li class="px-2 py-5">
+          <fa-icon icon="check" class="pr-2 text-black"/>
+          <a class="text-zinc-950">Reservations</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="list-check" class="pl-2.5 pr-2 text-black"/>
+          <a routerLink="/home/reservations">Reservations List</a>
+        </li>
+      </ul>
+    }
+    @if (isAdmin) {
+      <ul class="flex p-4 flex-col divide-y divide-[#ED5A2F]">
+        <li class="px-2 py-5">
+          <fa-icon icon="user-tie" class="pr-2 text-zinc-900"/>
+          <a class="text-zinc-950">Admin</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="list-ol" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a routerLink="/admin/vehicles">All Vehicles</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="user-gear" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a routerLink="/admin/profile-user">User Profile</a>
+        </li>
+        <li class="cursor-pointer p-5">
+          <fa-icon icon="address-card" class="pl-2.5 pr-2 text-zinc-900"/>
+          <a routerLink="/admin/all-profiles">All Profiles</a>
+        </li>
+      </ul>
+    }
+  </nav>
+
+  <main class="h-max flex-1 p-4 bg-[#ccc]">
+    <div class="p-6 rounded-md shadow-2xl bg-white">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+

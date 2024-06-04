@@ -1,0 +1,287 @@
+<div class="h-screen flex flex-col items-center bg-gray-50">
+  <h1
+    class="flex items-center justify-center mt-5 text-3xl font-semibold text-zinc-950"
+    [innerText]="isEdit ? 'Update Vehicle' : 'Add Vehicle'"
+  ></h1>
+  <div class="w-2/3 mt-6 p-6 rounded-md shadow-2xl bg-white">
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+      <div class="grid grid-cols-4 gap-x-5 gap-y-8">
+        <div class="">
+          <label class="block font-medium leading-6 text-zinc-950" for="nome"
+            >Name</label
+          >
+          <app-input
+            [required]="true"
+            id="nome"
+            inputName="nome"
+            type="text"
+            placeholder="Enter vehicle name"
+            [(ngModel)]="vehicle.nome"
+            name="nome"
+            #nome="ngModel"
+            [error]="messageError.showErrorMessageForKey(form, 'nome')"
+          >
+          </app-input>
+        </div>
+
+        <div class="">
+          <label class="block font-medium leading-6 text-zinc-950" for="preco"
+            >Price</label
+          >
+          <app-input
+            [required]="true"
+            inputName="preco"
+            id="preco"
+            type="number"
+            placeholder="Enter vehicle price"
+            [(ngModel)]="vehicle.preco"
+            name="preco"
+            #preco="ngModel"
+            [error]="messageError.showErrorMessageForKey(form, 'preco')"
+          >
+          </app-input>
+        </div>
+
+        <div class="">
+          <label class="block font-medium leading-6 text-zinc-950" for="marca"
+            >Brand</label
+          >
+          <app-input
+            [required]="true"
+            inputName="marca"
+            id="marca"
+            type="text"
+            placeholder="Enter vehicle brand"
+            [(ngModel)]="vehicle.marca"
+            name="marca"
+            #marca="ngModel"
+            [error]="messageError.showErrorMessageForKey(form, 'marca')"
+          >
+          </app-input>
+        </div>
+
+        <div>
+          <label class="block font-medium leading-6 text-zinc-950" for="tipo"
+            >Type</label
+          >
+          <!-- <app-input
+            [required]="true"
+            inputName="tipo"
+            id="tipo"
+            type="text"
+            placeholder="Enter vehicle type"
+            [(ngModel)]="vehicle.tipo"
+            name="tipo"
+            #tipo="ngModel"
+            [error]="messageError.showErrorMessageForKey(form, 'tipo')"
+          >
+          </app-input> -->
+          <select
+              id="perfil"
+              name="perfil"
+              [(ngModel)]="vehicle.tipo"
+              #tipo="ngModel"
+              required
+              [ngClass]="{
+                'invalid:border-red-600': tipo.invalid && tipo.touched
+              }"
+              class="mt-1 block w-full px-2 py-[0.595rem] bg-white border border-slate-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+            >
+              <option [ngValue]="undefined">Select</option>
+              <option value="CARRO">Car</option>
+              <option value="MOTO">Motorcycle</option>
+              <option value="CAMINHAO">Truck</option>
+            </select>
+            @if (tipo.invalid && tipo.touched) {
+            <small class="text-xs text-red-600">This field is required.</small>
+            }
+        </div>
+
+        <div class="col-span-4">
+          <label
+            class="block font-medium leading-6 text-zinc-950"
+            for="descricao"
+            >Description</label
+          >
+          <app-input
+            [required]="true"
+            inputName="descricao"
+            id="descricao"
+            type="textarea"
+            placeholder="Enter vehicle description"
+            [(ngModel)]="vehicle.descricao"
+            name="descricao"
+            #descricao="ngModel"
+            [error]="messageError.showErrorMessageForKey(form, 'descricao')"
+          >
+          </app-input>
+        </div>
+
+        <div class="col-span-full">
+          <div class="flex justify-between items-center">
+            <label
+              for="cover-photo"
+              class="block font-medium leading- text-zinc-950"
+              >Photos of the vehicle</label
+            >
+            <input
+              type="file"
+              #fileInput
+              style="display: none"
+              (change)="onChange($event)"
+              multiple
+            />
+            <button
+              type="button"
+              (click)="addImage(fileInput)"
+              class="px-2 py-1 rounded-md font-medium bg-[#ED5A2F] text-zinc-950 hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F]"
+            >
+              Add new image
+              <fa-icon icon="add" class="pl-2 text-black" />
+            </button>
+          </div>
+
+          @if (images.length === 0) {
+          <div
+            class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+          >
+            <div class="text-center">
+              <svg
+                class="mx-auto h-12 w-12 text-gray-300"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <div class="mt-4 flex text-sm leading-6 text-gray-600">
+                <label
+                  for="file-upload"
+                  class="relative cursor-pointer rounded-md bg-white font-semibold text-[#ED5A2F] focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-[#ff754b]"
+                >
+                  <span>Upload a file</span>
+                  <input
+                    id="file-upload"
+                    name="file-upload"
+                    type="file"
+                    class="sr-only"
+                    (change)="onChange($event)"
+                    multiple
+                  />
+                </label>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs leading-5 text-gray-600">
+                PNG, JPG, AVIF
+              </p>
+            </div>
+          </div>
+          } @else if (images.length > 0) {
+          <div
+            class="mt-2 flex justify-start rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+          >
+            @for (image of images; track image; let i = $index) {
+            <div class="relative" (mouseenter)="showDeleteButton[i] = true" (mouseleave)="showDeleteButton[i] = false">
+              <img
+                [src]="image.bytes"
+                class="w-60 h-auto object-cover cursor-pointer transform transition-all duration-200 hover:scale-110"
+              />
+               <fa-icon
+                *ngIf="showDeleteButton[i]"
+                (click)="deleteImage(image.id!, i)"
+                icon="trash"
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#ED5A2F] cursor-pointer"
+              ></fa-icon>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-4">
+        <button
+          type="button"
+          (click)="navigateToAdminVehicles()"
+          class="mt-6 w-28 rounded-md font-medium bg-[#ED5A2F] text-zinc-950 hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F]"
+        >
+          Back
+          <fa-icon icon="arrow-left" class="pl-2 text-black" />
+        </button>
+
+        @if(!isEdit) {
+        <button
+          class="mt-6 px-4 py-2 rounded-md font-medium bg-[#ED5A2F] text-zinc-950 hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F] focus:ring-offset-white"
+          type="submit"
+        >
+          Add Vehicle
+          <fa-icon icon="plus" class="pl-2 text-black" />
+        </button>
+        } @else {
+        <button
+          (click)="show()"
+          class="mt-6 px-4 py-2 rounded-md font-medium bg-[#ED5A2F] text-zinc-950 hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F] focus:ring-offset-white"
+          type="button"
+        >
+          Update Vehicle
+          <fa-icon icon="edit" class="pl-2 text-black" />
+        </button>
+        }
+      </div>
+
+      <dialog
+        [style.display]="isDialogOpen ? 'block' : 'none'"
+        class="rounded-2xl bg-transparent backdrop:bg-black/50 fixed inset-0 z-50"
+        #dialogRef
+      >
+        <div
+          class="group select-none w-[20rem] flex flex-col p-4 relative items-center bg-zinc-800 border border-zinc-800 shadow-lg rounded-2xl"
+        >
+          <div class="">
+            <div class="text-center p-3 flex-auto justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="group-hover:animate-bounce w-12 h-12 flex items-center text-gray-600 fill-[#ED5A2F] mx-auto"
+              >
+                <path
+                  d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z"
+                />
+                <path
+                  d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z"
+                />
+              </svg>
+
+              <h2 class="text-xl font-bold py-4 text-gray-200">
+                Are you sure?
+              </h2>
+              <p class="font-bold text-sm text-gray-500 px-2">
+                Do you really want to edit this vehicle?
+              </p>
+            </div>
+            <div class="p-2 mt-2 text-center space-x-2 md:block">
+              <button
+                type="button"
+                (click)="close()"
+                class="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="bg-[#ED5A2F] hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-[#ED5A2F] hover:bg-[#ff754b] text-white hover:text-[#ED5A2F] rounded-full transition ease-in duration-300"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </dialog>
+    </form>
+  </div>
+</div>
