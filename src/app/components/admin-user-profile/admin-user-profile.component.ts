@@ -7,16 +7,16 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UsuarioPerfilForm } from '../../models/forms/profile-user.model';
-import { Vehicle } from '../../models/forms/vehicle.model';
 import { AlertService } from '../../service/alert.service';
 import { LoadingService } from '../../service/loading.service';
+import { UsuarioService } from '../../service/usuario.service';
 import { MessageErrorResolver } from '../../utils/message-error-resolver';
 import { DialogComponent } from '../dialog/dialog.component';
 import { InputComponent } from '../input/input.component';
-import { UsuarioService } from '../../service/usuario.service';
+import { PerfilService } from '../../service/perfil.service';
+import { IProfileListResponse } from '../../models/dtos/profile-list';
 
 @Component({
   selector: 'app-admin-user-profile',
@@ -75,9 +75,13 @@ import { UsuarioService } from '../../service/usuario.service';
               class="mt-1 block w-full px-2 py-[0.595rem] bg-white border border-slate-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
             >
               <option [ngValue]="undefined">Select</option>
-              <option value="ADMIN">Admin</option>
+
+              @for (profile of profiles; track profile) {
+              <option [ngValue]="profile.nome">{{ profile.nome }}</option>
+              }
+              <!-- <option value="ADMIN">Admin</option>
               <option value="USER">User</option>
-              <option value="GERENTE">Gerente</option>
+              <option value="GERENTE">Gerente</option> -->
             </select>
             @if (perfil.invalid && perfil.touched) {
             <small class="text-xs text-red-600">This field is required.</small>
@@ -156,6 +160,7 @@ export class AdminUserProfileComponent implements OnInit {
   readonly #alertService = inject(AlertService);
   readonly #loadingService = inject(LoadingService);
   readonly #userService = inject(UsuarioService);
+  readonly #perfilService = inject(PerfilService);
   protected messageError = inject(MessageErrorResolver);
 
   @ViewChild('form') form!: NgForm;
@@ -166,10 +171,13 @@ export class AdminUserProfileComponent implements OnInit {
 
   perfil: string = '';
   usuario: string = '';
+  profiles: IProfileListResponse[] = [];
 
   @ViewChild('dialogRef') dialogRef!: ElementRef<HTMLDialogElement>;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.listAllProfiles();
+  }
 
   onSubmit() {
     this.#loadingService.isLoading.next(true);
@@ -194,6 +202,20 @@ export class AdminUserProfileComponent implements OnInit {
         },
       });
     }
+
+  }
+
+  private listAllProfiles() {
+    this.#perfilService.listAll().subscribe({
+      next: (profiles) => {
+        console.log(profiles);
+        this.profiles = profiles;
+      },
+      error: (error) => {
+        console.log(error);
+        this.#alertService.error(error);
+      },
+    });
   }
 
   show() {

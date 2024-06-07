@@ -1,0 +1,46 @@
+swiper-slide {
+  text-align: center;
+  font-size: 1px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+swiper-container::part(bullet-active) {
+  background-color: #ff754b;
+}
+
+.ngx-pagination ::ng-deep {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.ngx-pagination ::ng-deep .current {
+  background: #ff754b;
+  border-radius: 5px;
+  color: white;
+}
+
+.ngx-pagination ::ng-deep li {
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+::ng-deep .ngx-pagination .current:hover {
+  background: #ff754b !important;
+  border-radius: 5px !important;
+  border: transparent !important;
+}
+
+::ng-deep .ngx-pagination a:hover,
+.ngx-pagination button:hover {
+  background: #ff754b !important;
+  border-radius: 5px !important;
+  color: white !important;
+}
+
+.ngx-pagination ::ng-deep .disabled {
+  cursor: not-allowed;
+  color: #999;
+}

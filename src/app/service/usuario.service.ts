@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IUsuarioPerfilResponse } from '../models/dtos/usuario-perfil-save';
 import { UsuarioPerfilForm } from '../models/forms/profile-user.model';
+import { IUsuarioResponse } from '../models/dtos/user-response';
 
 @Injectable({
   providedIn: 'root'

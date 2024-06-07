@@ -1,7 +1,19 @@
-<div class="h-screen flex flex-col items-center bg-gray-50">
-  <h1 class="text-3xl font-semibold mt-8">User</h1>
-  <div class="w-2/3 mt-6 p-6 rounded-md shadow-2xl bg-white">
-    <form (ngSubmit)="onSubmit()" #form="ngForm">
+<div
+  class="h-screen flex items-center justify-center bg-[length:1436px_881px] bg-center bg-gray-50"
+  style="background-image: url('assets/imgs/carros-4.jpg')"
+>
+  <div class="w-1/2 p-6 rounded-md shadow-2xl bg-white">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-semibold">User</h1>
+      <button
+        (click)="navigateToHome()"
+        type="button"
+        class="bg-[#ED5A2F] rounded-md px-6 py-1 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+      >
+        Back
+        <fa-icon icon="arrow-left" class="pl-2 text-white" />
+      </button>
+    </div>
       <div class="grid grid-cols-1 gap-x-5 gap-y-6">
         <div class="">
           <app-input
@@ -9,7 +21,6 @@
             name="nome"
             type="text"
             [disabled]="true"
-            placeholder="Enter user's name"
             [ngModel]="usuario?.nome"
           >
           </app-input>
@@ -27,8 +38,8 @@
         </div>
 
         @if(isAdmin) {
-          <div>
-            <app-input
+        <div>
+          <app-input
             label="Roles"
             name="role"
             type="text"
@@ -36,10 +47,8 @@
             [ngModel]="usuario?.authorities"
           >
           </app-input>
-          </div>
+        </div>
         }
-
       </div>
-    </form>
   </div>
 </div>

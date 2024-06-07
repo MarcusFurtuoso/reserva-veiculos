@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../service/auth.service';
-import { User } from '../../models/forms/user.model';
+import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Subscription } from 'rxjs';
-import { UserAuthResponse } from '../../models/dtos/token-payload';
 import { InputComponent } from '../../components/input/input.component';
+import { UserAuthResponse } from '../../models/dtos/token-payload';
+import { UserUpdateForm } from '../../models/forms/user-update-form';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -18,6 +19,7 @@ import { InputComponent } from '../../components/input/input.component';
 export class UserComponent implements OnInit, OnDestroy {
 
   readonly #authService = inject(AuthService);
+  readonly #router = inject(Router);
 
   usuario?: UserAuthResponse;
 
@@ -49,8 +51,8 @@ export class UserComponent implements OnInit, OnDestroy {
     this.isAdmin = this.#authService.verifyIsAdmin();
   }
 
-  onSubmit() {
-
+  navigateToHome() {
+    this.#router.navigate(['home']);
   }
 
 }

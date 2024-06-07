@@ -6,4 +6,5 @@ export class Vehicle {
   image?: string;
   descricao?: string;
   preco?: number;
+  images?: string[] = [];
 }

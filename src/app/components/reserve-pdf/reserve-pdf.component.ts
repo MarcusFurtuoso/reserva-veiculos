@@ -10,13 +10,16 @@ import { AuthService } from '../../service/auth.service';
 import { ReservaService } from '../../service/reserva.service';
 import { VeiculoService } from '../../service/veiculo.service';
 import { PdfService } from '../../service/pdf.service';
+import { InputComponent } from '../input/input.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reserve-pdf',
   standalone: true,
-  imports: [FontAwesomeModule],
+  imports: [CommonModule, FontAwesomeModule, InputComponent, FormsModule],
   template: `
-    <div class="flex justify-end bg-gray-50 px-44 gap-2">
+    <div class="flex justify-end bg-gray-50 px-56 gap-2">
       <div>
         <button
           type="button"
@@ -39,92 +42,171 @@ import { PdfService } from '../../service/pdf.service';
         </button>
       </div>
     </div>
-    <div class="h-screen flex flex-col items-center bg-gray-50" id="reservePdf">
-      <div class="w-3/4 mt-6">
-        <div class="mt-4 px-10 py-6 rounded-md shadow-2xl bg-white">
-          <h1 class="text-3xl text-center font-semibold">Reserve PDF</h1>
-          <div class="flex justify-end mb-2"></div>
 
-          <div class="space-y-3">
-            <div
-              class="shadow-md rounded-md border border-t-0 p-4 flex justify-between items-center"
-            >
-              <div class="flex gap-5">
-                @if (images.length > 0) {
+    <div
+      class="min-h-screen flex flex-col justify-center items-center bg-gray-50"
+      id="reservePdf"
+    >
+      <div class="w-2/3 mt-10 rounded-md shadow-2xl bg-white pb-8 mb-4">
+        <div class="px-6">
+          @if (images.length > 0) {
+          <div class="flex justify-center items-center py-4">
+              @for (vehicleImage of images; track vehicleImage) {
                 <img
-                  src="{{ images[0].bytes }}"
-                  class="size-40 obj w-fit cursor-pointer transform transition-all duration-200 hover:scale-110 shadow-md"
-                  title="{{ vehicle?.nome }}"
+                src="{{ vehicleImage.bytes }}"
+                title="Image not avaliable"
+                class="max-w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-105"
                 />
-                } @else {
-                <img
-                  src="assets/imgs/image-not-available.png"
-                  class="size-40  obj w-fit cursor-pointer transform transition-all duration-200 hover:scale-110 shadow-md"
-                  title="Not available image"
-                />
-                }
-                <div class="flex flex-col gap-3">
-                  <div>
-                    <p class="font-bold text-lg pt-0.5">Reserve:</p>
+              }
+            </div>
+          }
+          <div class="flex flex-col gap-4">
+            <h1 class="text-2xl text-start font-bold mt-4">Vehicle Details:</h1>
 
-                    <div class="px-4">
-                      <p class="mt-1"><strong>Id:</strong> {{ reserve?.id }}</p>
+            <div class="grid grid-cols-4 gap-x-5 gap-y-8">
+              <div class="">
+                <label class="font-medium text-zinc-950">Name</label>
+                <p
+                  class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  type="text"
+                >
+                  {{ vehicle?.nome }}
+                </p>
+              </div>
 
-                      <p class="mt-1">
-                        <strong>Initial Date:</strong>
-                        {{ reserve?.dataInicial }}
-                      </p>
-                      <p class="mt-1">
-                        <strong>Final Date:</strong> {{ reserve?.dataFinal }}
-                      </p>
-                    </div>
-                  </div>
+              <div class="">
+                <label class="font-medium text-zinc-950">Price</label>
+                <p
+                  class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                >
+                  {{ vehicle?.preco }}
+                </p>
+              </div>
 
-                  <div class="">
-                    <p class="font-bold text-lg pt-0.5">Vehicle: </p>
+              <div class="">
+                <label class="font-medium text-zinc-950">Brand</label>
+                <p
+                  class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                >
+                  {{ vehicle?.marca }}
+                </p>
+              </div>
 
-                    <div class="px-4">
-                      <p class="mt-1">
-                        <strong>Name:</strong> {{ vehicle?.nome }}
-                      </p>
-                      <p class="mt-1">
-                        <strong>Brand:</strong> {{ vehicle?.marca }}
-                      </p>
-                      <p class="mt-1">
-                        <strong>Description: </strong> {{ vehicle?.descricao }}
-                      </p>
-                    </div>
-                  </div>
+              <div>
+                <label class="font-medium text-zinc-950" for="tipo">Type</label>
+                <p
+                  class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                >
+                  {{ vehicle?.tipo }}
+                </p>
+              </div>
 
-                  <div>
-                    <p class="font-bold text-lg pt-0.5">
-                      User:
-                    </p>
-                    <div class="px-4">
-                      <p class="mt-1">
-                        <strong>Name: </strong> {{ user?.nome }}
-                      </p>
-                      <p class="mt-1">
-                        <strong>Login: </strong> {{ user?.login }}
-                      </p>
-                    </div>
-                  </div>
+              <div class="col-span-4">
+                <label
+                  class="block font-medium leading-6 text-zinc-950"
+                  for="descricao"
+                  >Description</label
+                >
+                <p
+                  class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                >
+                  {{ vehicle?.descricao }}
+                </p>
+              </div>
+            </div>
+
+            <h1 class="text-2xl text-start font-bold mt-4">Reserve Details:</h1>
+
+            <div>
+              <div class="grid grid-cols-4 gap-x-5 gap-y-8">
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="dataInicio"
+                    >Start Date</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ reserve?.dataInicial }}
+                  </p>
                 </div>
 
-                <div class="flex items-center gap-2"></div>
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="dataFim"
+                    >End Date</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ reserve?.dataFinal }}
+                  </p>
+                </div>
+
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="valorTotal"
+                    >Total Value</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ vehicle?.preco }}
+                  </p>
+                </div>
+
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="status"
+                    >Status</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ reserveStatus }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h1 class="text-2xl text-start font-bold mt-4">User Details:</h1>
+            <div>
+              <div class="grid grid-cols-2 gap-x-5 gap-y-8">
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="nome"
+                    >Name</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ user?.nome }}
+                  </p>
+                </div>
+
+                <div class="">
+                  <label
+                    class="block font-medium leading-6 text-zinc-950"
+                    for="email"
+                    >Email</label
+                  >
+                  <p
+                    class="border border-gray-300 rounded-md w-full mt-2 px-3 py-3.5 text-start bg-white text-gray-900"
+                  >
+                    {{ user?.login }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `,
-  styles: `
-    @media print {
-      .no-print {
-        display: none;
-      }
-    }
   `,
 })
 export class ReservePdfComponent implements OnInit {
@@ -138,6 +220,8 @@ export class ReservePdfComponent implements OnInit {
   vehicle?: IVehicleResponse;
   reserve?: IReserveUsuarioListResponse;
   user?: UserAuthResponse;
+
+  reserveStatus = 'RESERVED';
 
   images: IVehicleImagesResponse[] = [];
 
@@ -164,6 +248,7 @@ export class ReservePdfComponent implements OnInit {
               .subscribe({
                 next: (response) => {
                   this.images = response ?? [];
+                  console.log('IMAGES' + this.images.length);
                 },
                 error: (error) => {
                   console.log(error);
@@ -193,6 +278,6 @@ export class ReservePdfComponent implements OnInit {
   }
 
   navigateToReserves() {
-    this.#router.navigate(['home','reservations']);
+    this.#router.navigate(['home', 'reservations']);
   }
 }

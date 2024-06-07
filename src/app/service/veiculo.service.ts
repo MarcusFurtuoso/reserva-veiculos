@@ -1,3 +1,4 @@
+import { PaginationResponse } from './../models/dtos/pagination-dto';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -15,6 +16,27 @@ export class VeiculoService {
 
   getAllVehicles(): Observable<Vehicle[]> {
     return this.#http.get<Vehicle[]>(`${this.API}`);
+  }
+
+  getAllVehiclesPaginated(page: number, size: number, vehicleType?: string): Observable<PaginationResponse<Vehicle>> {
+    let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+
+    if (vehicleType) {
+      params = params.set('tipo', vehicleType);
+    }
+
+    return this.#http.get<PaginationResponse<Vehicle>>(`${this.API}/all-paginated`, { params });
+  }
+
+  getAllVehiclesBySearch(page: number, size: number, vehicleName: string): Observable<Vehicle[]> {
+    let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString())
+    .set('nome', vehicleName);
+
+    return this.#http.get<Vehicle[]>(`${this.API}/all-search`, { params });
   }
 
   getAllCars(): Observable<Vehicle[]> {

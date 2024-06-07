@@ -18,6 +18,7 @@ import { PerfilService } from '../../service/perfil.service';
 import { MessageErrorResolver } from '../../utils/message-error-resolver';
 import { DialogComponent } from '../dialog/dialog.component';
 import { InputComponent } from '../input/input.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-admin-all-profiles',
@@ -28,139 +29,150 @@ import { InputComponent } from '../input/input.component';
     FontAwesomeModule,
     DialogComponent,
     InputComponent,
+    NgxPaginationModule,
   ],
   template: `
-    <div class="min-h-96 space-y-3 px-4">
-    <form (ngSubmit)="onSubmit()" #form="ngForm">
-      <div class="flex justify-between mb-6">
-        <h1 class="text-3xl font-bold">All Profiles</h1>
-        <div class="flex gap-2">
-          <button
-            type="submit"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
-          >
-            Save Changes
-            <!-- <fa-icon icon="floppy-disk" class="pl-2 text-white" /> -->
-            <fa-icon class="pl-2" [icon]="['far', 'floppy-disk']"></fa-icon>
-          </button>
-          <button
-            (click)="addProfileToList()"
-            type="button"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
-          >
-            Add Profile
-            <fa-icon icon="plus" class="pl-2 text-white" />
-
-          </button>
-        </div>
-      </div>
-
-        @for (profile of profiles; track profile; let i = $index) {
-
-        <div class="flex mb-4 gap-x-8 items-center">
-          <div class="w-20 h-10">
-            <label class="font-medium" for="price">Profile ID</label>
-            <input
-              required="true"
-              class="border border-gray-500 py-1.5 rounded-md w-14 text-center"
-              name="id{{ i }}"
-              type="text"
-              [(ngModel)]="profile.id"
-              disabled="true"
-            />
-          </div>
-          <div class="w-64  h-10">
-            <label class="font-medium" for="price">Name</label>
-            <input
-              required="true"
-              #inputNome
-              class="border border-gray-500 px-2 py-2 rounded-md w-full text-sm"
-              name="nome{{ i }}"
-              [ngClass]="{ 'border-red-600': nome.invalid && nome.touched }"
-              type="text"
-              [(ngModel)]="profile.nome"
-              #nome="ngModel"
-              [disabled]="!profile.isEditable"
-            />
-            @if(nome.invalid && nome.touched) {
-            <p class="text-red-600 text-sm pt-0.5">This field is required.</p>
-            }
-          </div>
-          <div class="space-x-4 pt-11">
+    <div class="min-h-96 px-4 mb-10">
+      <form (ngSubmit)="onSubmit()" #form="ngForm">
+        <div class="flex justify-between mb-6">
+          <h1 class="text-3xl font-bold">All Profiles</h1>
+          <div class="flex gap-2">
             <button
-              (click)="editProfile(profile, i)"
-              type="button"
-              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+              type="submit"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
-              Edit
-              <fa-icon icon="edit" class=" pl-2 text-white" />
+              Save Changes
+              <fa-icon class="pl-2" [icon]="['fas', 'floppy-disk']"></fa-icon>
             </button>
             <button
-              (click)="selectProfileForDeletion(profile.id)"
+              (click)="addProfileToList()"
               type="button"
-              class="bg-red-600 rounded-md px-6 py-1.5 text-white font-medium hover:bg-red-500 transition duration-300 ease-in-out"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5  text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
-              Delete
-              <fa-icon icon="trash" class="pl-2 text-white" />
+              Add Profile
+              <fa-icon icon="plus" class="pl-2 text-white" />
             </button>
           </div>
         </div>
 
-        <dialog
-          [style.display]="isDialogOpen ? 'block' : 'none'"
-          class="rounded-2xl bg-transparent backdrop:bg-black/50 fixed inset-0 z-50"
-          #dialogRef
-        >
-          <div
-            class="group select-none w-[20rem] flex flex-col p-4 relative items-center bg-zinc-800 border border-zinc-800 shadow-lg rounded-2xl"
-          >
-            <div class="">
-              <div class="text-center p-3 flex-auto justify-center">
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  class="group-hover:animate-bounce w-12 h-12 flex items-center text-gray-600 fill-red-500 mx-auto"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    fill-rule="evenodd"
-                  ></path>
-                </svg>
-                <h2 class="text-xl font-bold py-4 text-gray-200">
-                  Are you sure?
-                </h2>
-                <p class="font-bold text-sm text-gray-500 px-2">
-                  Do you really want to exclude this profile? This process
-                  cannot be undone
-                </p>
+        @for (profile of profiles | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems};
+          track profile; let i = $index) {
+            <div class="flex mb-4 gap-x-8 items-center">
+              <div class="w-20 h-10">
+                <label class="font-medium" for="price">Profile ID</label>
+                <input
+                  required="true"
+                  class="border border-gray-500 py-1.5 rounded-md w-14 text-center"
+                  name="id{{ i }}"
+                  type="text"
+                  [(ngModel)]="profile.id"
+                  disabled="true"
+                />
               </div>
-              <div class="p-2 mt-2 text-center space-x-2 md:block">
+              <div class="w-64  h-10">
+                <label class="font-medium" for="price">Name</label>
+                <input
+                  required="true"
+                  #inputNome
+                  class="border border-gray-500 px-2 py-2 rounded-md w-full text-sm"
+                  name="nome{{ i }}"
+                  [ngClass]="{ 'border-red-600': nome.invalid && nome.touched }"
+                  type="text"
+                  [(ngModel)]="profile.nome"
+                  #nome="ngModel"
+                  [disabled]="!profile.isEditable"
+                />
+                @if(nome.invalid && nome.touched) {
+                  <p class="text-red-600 text-sm pt-0.5">This field is required.</p>
+                }
+              </div>
+              <div class="space-x-4 pt-11">
                 <button
-                  (click)="close()"
+                  (click)="editProfile(profile, i)"
                   type="button"
-                  class="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
+                  class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
                 >
-                  Cancel
+                  Edit
+                  <fa-icon icon="edit" class=" pl-2 text-white" />
                 </button>
                 <button
-                  (click)="deleteProfile()"
+                  (click)="selectProfileForDeletion(profile.id)"
                   type="button"
-                  class="bg-red-600 hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-600 hover:border-red-600 text-white hover:text-red-600 rounded-full transition ease-in duration-300"
+                  class="bg-red-600 rounded-md px-6 py-1.5 text-white font-medium hover:bg-red-500 transition duration-300 ease-in-out"
                 >
-                  Confirm
+                  Delete
+                  <fa-icon icon="trash" class="pl-2 text-white" />
                 </button>
               </div>
             </div>
-          </div>
-        </dialog>
+
+            <dialog
+              [style.display]="isDialogOpen ? 'block' : 'none'"
+              class="rounded-2xl bg-transparent backdrop:bg-black/50 fixed inset-0 z-50"
+              #dialogRef
+            >
+              <div
+                class="group select-none w-[20rem] flex flex-col p-4 relative items-center bg-zinc-800 border border-zinc-800 shadow-lg rounded-2xl"
+              >
+                <div class="">
+                  <div class="text-center p-3 flex-auto justify-center">
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      class="group-hover:animate-bounce w-12 h-12 flex items-center text-gray-600 fill-red-500 mx-auto"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        fill-rule="evenodd"
+                      ></path>
+                    </svg>
+                    <h2 class="text-xl font-bold py-4 text-gray-200">
+                      Are you sure?
+                    </h2>
+                    <p class="font-bold text-sm text-gray-500 px-2">
+                      Do you really want to exclude this profile? This process
+                      cannot be undone
+                    </p>
+                  </div>
+                  <div class="p-2 mt-2 text-center space-x-2 md:block">
+                    <button
+                      (click)="close()"
+                      type="button"
+                      class="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      (click)="deleteProfile()"
+                      type="button"
+                      class="bg-red-600 hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-600 hover:border-red-600 text-white hover:text-red-600 rounded-full transition ease-in duration-300"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </dialog>
         }
       </form>
     </div>
+    <div class="flex justify-center">
+      <pagination-controls
+        class="ngx-pagination"
+        previousLabel="Previous"
+        nextLabel="Next"
+        (pageChange)="onPageChange($event)"
+      ></pagination-controls>
+    </div>
   `,
+  styleUrls: ['./admin-all-profiles.component.css'],
 })
 export class AdminAllProfilesComponent implements OnInit {
+  itemsPerPage: number = 6;
+  currentPage: number = 0;
+  totalItems: number = 0;
 
   readonly #alertService = inject(AlertService);
   readonly #perfilService = inject(PerfilService);
@@ -179,7 +191,7 @@ export class AdminAllProfilesComponent implements OnInit {
   @ViewChildren('inputNome') inputNomes!: QueryList<ElementRef>;
 
   ngOnInit(): void {
-    this.listAllProfiles();
+    this.listAllProfilesPaginated();
   }
 
   onSubmit() {
@@ -198,6 +210,24 @@ export class AdminAllProfilesComponent implements OnInit {
     if (!changesMade) {
       this.#alertService.info('No changes were made.');
     }
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    // this.listAllVehiclesPaginated();
+  }
+
+  private listAllProfilesPaginated() {
+    this.#perfilService.listAllPaginated(this.currentPage, this.itemsPerPage).subscribe({
+      next: (profiles) => {
+        console.log(profiles);
+        this.profiles = profiles;
+      },
+      error: (error) => {
+        console.log(error);
+        this.#alertService.error(error);
+      },
+    });
   }
 
   private listAllProfiles() {

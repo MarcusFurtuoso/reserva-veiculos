@@ -11,19 +11,20 @@ import { LogoComponent } from '../logo/logo.component';
   standalone: true,
   imports: [CommonModule, FormsModule, BackButtonComponent, InputComponent, LogoComponent],
   template: `
-    <body class="h-screen w-screen flex justify-center bg-gray-50">
+    <body class="h-screen flex justify-center bg-[length:1436px_881px] bg-center  bg-gray-50"
+style="background-image: url('assets/imgs/carros.jpg')">
       <div class="w-96 mt-32">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <logo></logo>
           <h2
-            class="mt-8 text-center text-2xl font-bold leading-9 tracking-tight"
+            class="mt-8 text-white text-center text-2xl font-bold tracking-tight"
           >
             Reset your password
           </h2>
         </div>
 
         <div
-          class="mt-8 bg-white shadow-md rounded-md p-4"
+          class="mt-4 bg-white shadow-md rounded-md p-4"
         >
           <back-button></back-button>
 

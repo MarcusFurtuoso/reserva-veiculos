@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AuthService } from './service/auth.service';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -12,9 +12,11 @@ import { AlertComponent } from './components/alert/alert.component';
 import { LoadingService } from './service/loading.service';
 import { LoadingComponent } from './components/loading/loading.component';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, RouterOutlet, FontAwesomeModule, NavBarComponent, AlertComponent, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

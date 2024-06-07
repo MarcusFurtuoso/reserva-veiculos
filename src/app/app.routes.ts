@@ -6,15 +6,15 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ListReservationComponent } from './components/list-reservation/list-reservation.component';
 import { ListVehiclesComponent } from './components/list-vehicles/list-vehicles.component';
 import { ReservePdfComponent } from './components/reserve-pdf/reserve-pdf.component';
+import { adminGuard } from './guards/admin.guard';
+import { authAdminGuard, authGuard } from './guards/auth.guard';
+import { userGuard, userReservesGuard } from './guards/user.guard';
 import { AddUpdateVehicleComponent } from './pages/add-update-vehicle/add-update-vehicle.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ReservesComponent } from './pages/reserves/reserves.component';
 import { UserComponent } from './pages/user/user.component';
-import { adminGuard } from './guards/admin.guard';
-import { userGuard, userReservesGuard } from './guards/user.guard';
-import { authAdminGuard, authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -34,15 +34,12 @@ export const routes: Routes = [
     path: 'user',
     canActivate: [authGuard],
     component: UserComponent,
-    children: [
-      {
-        path: 'reserves',
-        canActivate: [userReservesGuard],
-        component: ReservesComponent,
-      },
-    ],
   },
-
+  {
+    path: 'reserves',
+    canActivate: [authGuard, userGuard],
+    component: ReservesComponent,
+  },
   {
     path: 'home',
     canActivate: [authGuard],
@@ -60,7 +57,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'vehicles/cars',
+        redirectTo: 'vehicles/all',
         pathMatch: 'full',
       },
     ],

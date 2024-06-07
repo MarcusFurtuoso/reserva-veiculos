@@ -3,7 +3,7 @@ export interface ReserveListView{
   vehicleMarca?: string;
   vehiclePreco: number;
   vehicleDescricao: string;
-  imagem: string;
+  imagem?: string[];
   dataInicial?: string;
   dataFinal?: string;
   veiculoId: number;

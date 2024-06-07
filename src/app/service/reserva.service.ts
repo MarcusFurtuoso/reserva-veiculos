@@ -26,6 +26,15 @@ export class ReservaService {
     return this.#http.get<IReserveUsuarioListResponse[]>(`${this.API}/usuario`, { params });
   }
 
+  listAllByUsuarioPaginated(page: number, size: number, usuarioId: number): Observable<IReserveUsuarioListResponse[]> {
+    let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString())
+    .set('usuarioId', usuarioId.toString());
+
+    return this.#http.get<IReserveUsuarioListResponse[]>(`${this.API}/usuario-paginated`, { params });
+  }
+
   findById(reserveId: number): Observable<IReserveUsuarioListResponse> {
     return this.#http.get<IReserveUsuarioListResponse>(`${this.API}/${reserveId}`);
   }

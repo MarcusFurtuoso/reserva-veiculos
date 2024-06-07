@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  CUSTOM_ELEMENTS_SCHEMA,
   Component,
   ElementRef,
   OnInit,
@@ -14,26 +15,58 @@ import { AlertService } from '../../service/alert.service';
 import { VeiculoService } from '../../service/veiculo.service';
 import { DialogComponent } from '../dialog/dialog.component';
 import { LoadingService } from '../../service/loading.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { FormsModule } from '@angular/forms';
+import { PaginationResponse } from '../../models/dtos/pagination-dto';
 
 @Component({
   selector: 'app-admin-user-profile',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, DialogComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    CommonModule,
+    FontAwesomeModule,
+    NgxPaginationModule,
+    DialogComponent,
+    FormsModule,
+  ],
   template: `
-    <div class="min-h-96 space-y-3 px-4">
-      <div class="flex justify-between mb-10">
+    <div class="min-h-96 space-y-6 px-4 pb-8">
+      <div class="flex justify-between items-center mb-12">
         <h1 class="text-3xl font-bold">All Vehicles</h1>
         <div class="flex gap-4">
-          <button
-            type="submit"
-            (click)="navigateToAddVehicle()"
-            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+          <div class="relative">
+            <button class="absolute left-2 -translate-y-1/2 top-1/2 p-1">
+              <fa-icon
+                (click)="listAllVehiclesBySearch(search)"
+                icon="magnifying-glass"
+                class="text-zinc-700"
+              />
+            </button>
+            <input
+              class="rounded-md px-8 py-3 border-2 border-transparent focus:outline-none focus:border-[#ff754b] placeholder-gray-400 transition-transform duration-300 shadow-md"
+              placeholder="Search..."
+              required="true"
+              type="text"
+              [(ngModel)]="search"
+              (keyup.enter)="listAllVehiclesBySearch(search)"
+              (keyup)="search === '' ? listAllVehiclesPaginated() : null"
+            />
+            <button
+              type="reset"
+              class="absolute right-3 -translate-y-1/2 top-1/2 p-1"
+            >
+              <fa-icon
+                (click)="resetSearch()"
+                icon="xmark"
+                class="text-zinc-700"
+              />
+            </button>
+          </div>
+          <div
+            class="flex ml-2 items-center relative"
+            (click)="toggleDropdown()"
           >
-            Add Vehicle
-            <fa-icon icon="plus" class="pl-2 text-white" />
-          </button>
-
-          <div class="flex ml-2 items-center relative" (click)="toggleDropdown()">
             <button class="border border-[#ED5A2F] px-2 py-2 rounded-md">
               <svg viewBox="0 0 512 512" height="1em">
                 <path
@@ -42,40 +75,79 @@ import { LoadingService } from '../../service/loading.service';
               </svg>
             </button>
             <div
-              class="flex w-[6.5rem] flex-col absolute top-10 -left-8 bg-slatext-white border border-[#ED5A2F] rounded-md  px-2 py-2"
+              class="flex w-[6.5rem] flex-col absolute top-10 -left-8 bg-slatext-white border border-[#ED5A2F] bg-white rounded-md  px-2 py-2"
               [ngStyle]="{ display: dropdownOpen ? 'block' : 'none' }"
             >
-            <div (click)="listAllVehicles()" class="hover:bg-[#ff754b] pb-1 px-1 w-full cursor-pointer rounded-md">
-              <p class="text-sm">All</p>
-            </div>
-            <div (click)="listAllCars()"  class="hover:bg-[#ff754b] pb-1 px-1 w-full cursor-pointer rounded-md">
-              <p class="text-sm">Cars</p>
-            </div>
-            <div (click)="listAllMotorcycles()" class="hover:bg-[#ff754b] pb-1 px-1 w-[5.8rem] cursor-pointer rounded-md">
-              <p class="text-sm">Motorcycles</p>
-            </div>
-            <div (click)="listAllTrucks()" class="hover:bg-[#ff754b] px-1 w-full cursor-pointer rounded-md">
-              <p class="text-sm">Trucks</p>
-            </div>
+              <div
+                (click)="listAllVehiclesPaginated()"
+                class="hover:bg-[#ff754b] pb-1 px-1 w-full cursor-pointer rounded-md"
+              >
+                <p class="text-sm">All</p>
+              </div>
+              <div
+                (click)="listAllVehiclesPaginated('CARRO')"
+                class="hover:bg-[#ff754b] pb-1 px-1 w-full cursor-pointer rounded-md"
+              >
+                <p class="text-sm">Cars</p>
+              </div>
+              <div
+                (click)="listAllVehiclesPaginated('MOTO')"
+                class="hover:bg-[#ff754b] pb-1 px-1 w-[5.8rem] cursor-pointer rounded-md"
+              >
+                <p class="text-sm">Motorcycles</p>
+              </div>
+              <div
+                (click)="listAllVehiclesPaginated('CAMINHAO')"
+                class="hover:bg-[#ff754b] px-1 w-full cursor-pointer rounded-md"
+              >
+                <p class="text-sm">Trucks</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      @for (vehicle of vehicles; track vehicle; let i = $index) {
+      <div class="flex justify-start">
+        <div class="flex gap-4">
+          <button
+            type="button"
+            (click)="navigateToAddVehicle()"
+            class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+          >
+            Add Vehicle
+            <fa-icon icon="plus" class="pl-2 text-white" />
+          </button>
+        </div>
+      </div>
+      @for (vehicle of vehicles | paginate: { itemsPerPage: itemsPerPage,
+      currentPage: currentPage, totalItems: totalItems}; track vehicle ; let i =
+      $index) {
       <div class="shadow-md rounded-md p-4 flex justify-between items-center">
         <div class="flex gap-5">
-          @if (vehicle.image) {
-          <img
-            [src]="vehicle.image"
-            class="w-64 h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-110"
-            [title]="vehicle.nome"
-          />
+          @if (vehicle.images && vehicle.images.length > 0) {
+          <div class="max-w-64">
+            <swiper-container
+              pagination="true"
+              pagination-dynamic-bullets="true"
+            >
+              @for (imagem of vehicle.images; track imagem; let i = $index) {
+              <swiper-slide>
+                <img
+                  [src]="imagem"
+                  alt="Vehicle Image"
+                  class="max-w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-105"
+                />
+              </swiper-slide>
+              }
+            </swiper-container>
+          </div>
           } @else {
-          <img
-            src="assets/imgs/image-not-available.png"
-            class="w-60 h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-110"
-            [title]="vehicle.nome"
-          />
+          <div class="max-w-64">
+            <img
+              src="assets/imgs/car-illustration.png"
+              class="w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-105"
+              title="Image not avaliable"
+            />
+          </div>
           }
           <div class="flex flex-col w-96">
             <p class="font-bold text-xl mb-1 ">{{ vehicle.nome }}</p>
@@ -147,12 +219,14 @@ import { LoadingService } from '../../service/loading.service';
               </div>
               <div class="p-2 mt-2 text-center space-x-2 md:block">
                 <button
+                  type="button"
                   (click)="close()"
                   class="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   (click)="deleteVehicle()"
                   class="bg-red-600 hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-600 hover:border-red-600 text-white hover:text-red-600 rounded-full transition ease-in duration-300"
                 >
@@ -165,44 +239,63 @@ import { LoadingService } from '../../service/loading.service';
       </div>
       }
     </div>
+    <div class="flex justify-center">
+      <pagination-controls
+        class="ngx-pagination"
+        previousLabel="Previous"
+        nextLabel="Next"
+        (pageChange)="onPageChange($event)"
+      ></pagination-controls>
+    </div>
   `,
-  styles: ``,
+  styleUrls: ['./admin-vehicles.component.css'],
 })
 export class AdminVehiclesComponent implements OnInit {
+  itemsPerPage: number = 9;
+  currentPage: number = 0;
+  totalItems: number = 0;
+
+  isDialogOpen = false;
+  dropdownOpen = false;
+
+  deleteIndex!: number;
+
+  search: string = '';
+
+  vehicles: Vehicle[] = [];
+
   readonly #router = inject(Router);
   readonly #alertService = inject(AlertService);
   readonly #vehicleService = inject(VeiculoService);
   readonly #loadingService = inject(LoadingService);
 
-  isDialogOpen = false;
-
-  dropdownOpen = false;
-
-  public deleteIndex!: number;
-
   @ViewChild('dialogRef') dialogRef!: ElementRef<HTMLDialogElement>;
 
-  vehicles: Vehicle[] = [];
-
   ngOnInit(): void {
-    this.listAllVehicles();
+    this.listAllVehiclesPaginated();
   }
 
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
+  protected listAllVehiclesPaginated(filter?: string | null) {
+    if (filter) {
+      this.currentPage = 1;
+    }
 
-  protected listAllVehicles() {
     this.#vehicleService
-      .getAllVehicles()
+      .getAllVehiclesPaginated(this.currentPage - 1, this.itemsPerPage, filter?.toString())
       .pipe(
-        mergeMap((vehicles: Vehicle[]) => {
+        mergeMap((response: PaginationResponse<Vehicle>) => {
+          // console.log(response);
+
+          this.totalItems = response.totalElements;
+          let vehicles: Vehicle[] = response.content;
           if (vehicles.length > 0) {
             let vehicleImagesRequests = vehicles.map((vehicle) =>
               this.#vehicleService.getVehicleImages(vehicle.id!).pipe(
                 map((vehicleImagesDto) => {
-                  if (vehicleImagesDto && vehicleImagesDto[0]) {
-                    vehicle.image = vehicleImagesDto[0].bytes; // Access the 'bytes' property correctly
+                  if (vehicleImagesDto && vehicleImagesDto) {
+                    vehicle.images = vehicleImagesDto.map(
+                      (image) => image.bytes
+                    );
                   }
                   return vehicle;
                 })
@@ -217,102 +310,53 @@ export class AdminVehiclesComponent implements OnInit {
       .subscribe({
         next: (vehicles: Vehicle[]) => {
           this.vehicles = vehicles;
+          console.log(vehicles);
         },
         error: (error: Error) => {
-          console.error(error);
+          console.error('Error: ' + error);
         },
       });
   }
 
-  listAllCars() {
-    this.#vehicleService.getAllCars().pipe(
-      mergeMap((vehicles: Vehicle[]) => {
-        if (vehicles.length > 0) {
-          let vehicleImagesRequests = vehicles.map((vehicle) =>
-            this.#vehicleService.getVehicleImages(vehicle.id!).pipe(
-              map((vehicleImagesDto) => {
-                if (vehicleImagesDto && vehicleImagesDto[0]) {
-                  vehicle.image = vehicleImagesDto[0].bytes; // Access the 'bytes' property correctly
-                }
-                return vehicle;
-              })
-            )
-          );
-          return forkJoin(vehicleImagesRequests);
-        } else {
-          return of([]);
-        }
-      })
-    ).subscribe({
-      next: (vehicles: Vehicle[]) => {
-        this.vehicles = vehicles;
-      },
-      error: (error: Error) => {
-        console.error('Error: ' + error);
-      },
-    });
+  protected listAllVehiclesBySearch(search: string) {
+    this.currentPage = 1;
+    this.#vehicleService
+      .getAllVehiclesBySearch(this.currentPage - 1, this.itemsPerPage, search)
+      .pipe(
+        mergeMap((response: any) => {
+          this.totalItems = response.totalElements;
+          let vehicles: Vehicle[] = response.content;
+          if (vehicles.length > 0) {
+            let vehicleImagesRequests = vehicles.map((vehicle) =>
+              this.#vehicleService.getVehicleImages(vehicle.id!).pipe(
+                map((vehicleImagesDto) => {
+                  if (vehicleImagesDto && vehicleImagesDto) {
+                    vehicle.images = vehicleImagesDto.map(
+                      (image) => image.bytes
+                    );
+                  }
+                  return vehicle;
+                })
+              )
+            );
+            return forkJoin(vehicleImagesRequests);
+          } else {
+            return of([]);
+          }
+        })
+      )
+      .subscribe({
+        next: (vehicles: Vehicle[]) => {
+          this.vehicles = vehicles;
+          // console.log(vehicles);
+        },
+        error: (error: Error) => {
+          console.error('Error: ' + error);
+        },
+      });
   }
 
-  listAllMotorcycles() {
-    this.#vehicleService.getAllMotorcycles().pipe(
-      mergeMap((vehicles: Vehicle[]) => {
-        if (vehicles.length > 0) {
-          let vehicleImagesRequests = vehicles.map((vehicle) =>
-            this.#vehicleService.getVehicleImages(vehicle.id!).pipe(
-              map((vehicleImagesDto) => {
-                if (vehicleImagesDto && vehicleImagesDto[0]) {
-                  vehicle.image = vehicleImagesDto[0].bytes; // Access the 'bytes' property correctly
-                }
-                return vehicle;
-              })
-            )
-          );
-          return forkJoin(vehicleImagesRequests);
-        } else {
-          return of([]);
-        }
-      })
-    ).subscribe({
-      next: (vehicles: Vehicle[]) => {
-        this.vehicles = vehicles;
-      },
-      error: (error: Error) => {
-        console.error('Error: ' + error);
-      },
-    });
-  }
-
-  listAllTrucks() {
-    this.#vehicleService.getAllTrucks().pipe(
-      mergeMap((vehicles: Vehicle[]) => {
-        if (vehicles.length > 0) {
-          let vehicleImagesRequests = vehicles.map((vehicle) =>
-            this.#vehicleService.getVehicleImages(vehicle.id!).pipe(
-              map((vehicleImagesDto) => {
-                if (vehicleImagesDto && vehicleImagesDto[0]) {
-                  vehicle.image = vehicleImagesDto[0].bytes; // Access the 'bytes' property correctly
-                }
-                return vehicle;
-              })
-            )
-          );
-          return forkJoin(vehicleImagesRequests);
-        } else {
-          return of([]);
-        }
-      })
-    ).subscribe({
-      next: (vehicles: Vehicle[]) => {
-        this.vehicles = vehicles;
-      },
-      error: (error: Error) => {
-        console.error('Error: ' + error);
-      },
-    });
-  }
-
-
-  deleteVehicle() {
+  protected deleteVehicle() {
     this.#loadingService.isLoading.next(true);
     this.isDialogOpen = true;
     this.#vehicleService.delete(this.deleteIndex).subscribe({
@@ -320,7 +364,8 @@ export class AdminVehiclesComponent implements OnInit {
         setTimeout(() => {
           this.#loadingService.isLoading.next(false);
           this.#alertService.success('Vehicle deleted successfully!');
-          this.listAllVehicles();
+          this.currentPage = 1;
+          this.listAllVehiclesPaginated();
         }, 300);
         this.close();
       },
@@ -331,22 +376,36 @@ export class AdminVehiclesComponent implements OnInit {
     });
   }
 
-  show(vehicleId: number) {
+  protected resetSearch() {
+    this.search = '';
+    this.listAllVehiclesPaginated();
+  }
+
+  protected toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  protected onPageChange(page: number) {
+    this.currentPage = page;
+    this.listAllVehiclesPaginated();
+  }
+
+  protected show(vehicleId: number) {
     this.deleteIndex = vehicleId;
     this.isDialogOpen = true;
     this.dialogRef.nativeElement.showModal();
   }
 
-  close() {
+  protected close() {
     this.isDialogOpen = false;
     this.dialogRef.nativeElement.close();
   }
 
-  navigateToAddVehicle() {
+  protected navigateToAddVehicle() {
     this.#router.navigate(['admin', 'add-vehicle']);
   }
 
-  navigateToUpdateVehicle(vehicle: Vehicle) {
-    this.#router.navigate(['admin','update-vehicle', vehicle.id]);
+  protected navigateToUpdateVehicle(vehicle: Vehicle) {
+    this.#router.navigate(['admin', 'update-vehicle', vehicle.id]);
   }
 }

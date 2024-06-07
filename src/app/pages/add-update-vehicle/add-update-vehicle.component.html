@@ -1,9 +1,9 @@
-<div class="h-screen flex flex-col items-center bg-gray-50">
+<div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
   <h1
     class="flex items-center justify-center mt-5 text-3xl font-semibold text-zinc-950"
     [innerText]="isEdit ? 'Update Vehicle' : 'Add Vehicle'"
   ></h1>
-  <div class="w-2/3 mt-6 p-6 rounded-md shadow-2xl bg-white">
+  <div class="w-2/3 mt-6 p-6 rounded-md shadow-2xl bg-white mb-4">
     <form (ngSubmit)="onSubmit()" #form="ngForm">
       <div class="grid grid-cols-4 gap-x-5 gap-y-8">
         <div class="">
@@ -64,18 +64,7 @@
           <label class="block font-medium leading-6 text-zinc-950" for="tipo"
             >Type</label
           >
-          <!-- <app-input
-            [required]="true"
-            inputName="tipo"
-            id="tipo"
-            type="text"
-            placeholder="Enter vehicle type"
-            [(ngModel)]="vehicle.tipo"
-            name="tipo"
-            #tipo="ngModel"
-            [error]="messageError.showErrorMessageForKey(form, 'tipo')"
-          >
-          </app-input> -->
+
           <select
               id="perfil"
               name="perfil"
@@ -134,6 +123,7 @@
             <button
               type="button"
               (click)="addImage(fileInput)"
+              [disabled]="images.length >= 6"
               class="px-2 py-1 rounded-md font-medium bg-[#ED5A2F] text-white hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F]"
             >
               Add new image
@@ -182,13 +172,13 @@
           </div>
           } @else if (images.length > 0) {
           <div
-            class="mt-2 flex justify-start rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+            class="mt-2 flex justify-center items-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
           >
             @for (image of images; track image; let i = $index) {
             <div class="relative" (mouseenter)="showDeleteButton[i] = true" (mouseleave)="showDeleteButton[i] = false">
               <img
                 [src]="image.bytes"
-                class="w-60 h-auto object-cover cursor-pointer transform transition-all duration-200 hover:scale-110"
+                class="max-w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-110"
               />
                <fa-icon
                 *ngIf="showDeleteButton[i]"

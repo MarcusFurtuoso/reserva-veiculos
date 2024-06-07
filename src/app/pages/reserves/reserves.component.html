@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col items-center bg-gray-50 pb-10">
+<div class="min-h-screen flex flex-col items-center bg-gray-50 pb-10">
   <div class="w-3/4 mt-6">
     <div class="mt-4 px-10 py-6 rounded-md shadow-2xl bg-white">
       <form (submit)="onSubmit()" #form="ngForm">
@@ -8,37 +8,52 @@
             <button
               (click)="navigateToVehicles()"
               type="button"
-              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
               Back
-              <fa-icon icon="arrow-left" class="pl-2 text-black" />
+              <fa-icon icon="arrow-left" class="pl-2 text-white" />
             </button>
             <button
               type="submit"
-              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-black font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
+              class="bg-[#ED5A2F] rounded-md px-6 py-1.5 text-white font-medium hover:bg-[#ff754b] transition duration-300 ease-in-out"
             >
               Make a reservation
-              <fa-icon icon="check" class="pl-2 text-black" />
+              <fa-icon icon="check" class="pl-2 text-white" />
             </button>
           </div>
         </div>
         <div class="space-y-3">
+          @if (reserveListView.length == 0) {
+            <resource-not-found
+            [svg]="svgString"
+            title="No reservations found"
+            message="You have not made any reservations yet. Click on the button below to return to the vehicle list and make a reservation."
+            ></resource-not-found>
+          }
           @for (reserve of reserveListView; track reserve; let i = $index) {
           <div
             class="shadow-md rounded-md border border-t-0 p-4 flex justify-between items-center"
           >
             <div class="flex gap-5">
-              @if (reserve.imagem) {
-              <img
-                [src]="reserve.imagem"
-                class="size-40 obj w-fit cursor-pointer transform transition-all duration-200 hover:scale-110"
-                [title]="reserve.vehicleName"
-              />
+              @if (reserve.imagem!.length > 0) {
+                <div class="max-w-64">
+                  <swiper-container pagination="true" pagination-dynamic-bullets="true">
+                  @for (imagem of reserve.imagem; track imagem; let i = $index) {
+                  <swiper-slide>
+                    <img
+                      [src]="imagem"
+                      alt="Vehicle Image"
+                      class="max-w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-105"
+                    />
+                  </swiper-slide>
+                  }
+                </swiper-container>
+              </div>
               } @else {
-              <img
-                src="assets/imgs/image-not-available.png"
-                class="size-40 obj w-fit cursor-pointer transform transition-all duration-200 hover:scale-110"
-                title="Not available image"
+                <img
+                src="assets/imgs/car-illustration.png"
+                title="Image not avaliable"
+                class="w-64 max-h-40 object-cover cursor-pointer transform transition-all duration-200 hover:scale-105"
               />
               }
               <div class="flex flex-col">
@@ -93,10 +108,10 @@
               <button
                 (click)="show(i)"
                 type="button"
-                class="bg-red-600 rounded-md px-6 py-1.5 text-black font-medium hover:bg-red-500 transition duration-300 ease-in-out"
+                class="bg-red-600 rounded-md px-6 py-1.5 text-white font-medium hover:bg-red-500 transition duration-300 ease-in-out"
               >
                 Delete
-                <fa-icon icon="trash" class="pl-2 text-black" />
+                <fa-icon icon="trash" class="pl-2 text-white" />
               </button>
             </div>
             <dialog

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IProfileListResponse } from '../models/dtos/profile-list';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ProfileForm } from '../models/forms/profile.model';
 
 @Injectable({
@@ -29,5 +29,10 @@ export class PerfilService {
     return this.#http.get<IProfileListResponse[]>(this.API);
   }
 
-
+  listAllPaginated(page: number, size: number): Observable<IProfileListResponse[]> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.#http.get<IProfileListResponse[]>(`${this.API}/all-paginated`, { params });
+  }
 }

@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   template: `
     <img
     class="mx-auto h-24 w-auto"
-      src="assets/logo/logo.png"
+      src="assets/logo/logo-1.png"
       alt="Logo"
     />
   `,
