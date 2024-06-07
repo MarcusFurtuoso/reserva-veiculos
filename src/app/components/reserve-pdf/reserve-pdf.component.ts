@@ -37,8 +37,8 @@ import { CommonModule } from '@angular/common';
           class="mt-6 px-4 py-2 rounded-md font-medium bg-[#ED5A2F] text-zinc-950 hover:bg-[#ff754b] transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ED5A2F] focus:ring-offset-white"
           type="submit"
         >
-          Print
-          <fa-icon icon="print" class="pl-2 text-black" />
+          Generate PDF
+          <fa-icon icon="file-pdf" class="pl-2 text-black" />
         </button>
       </div>
     </div>
